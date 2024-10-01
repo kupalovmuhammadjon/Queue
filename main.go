@@ -1,62 +1,79 @@
-package main
+package queue
 
-type Node struct {
-	Val  interface{}
-	Next *Node
+// Queue interface defines the methods that any queue implementation should have
+type Queue interface {
+    Push(val interface{})
+    Pop() interface{}
+    Peek() interface{}
+    IsEmpty() bool
+    Size() int
 }
 
-type Queue struct {
-	Front *Node
-	Rear  *Node
-	Len   int
+// node represents a node in the queue
+type node struct {
+    val  interface{}
+    next *node
 }
 
-func NewQueue() *Queue {
-	return &Queue{}
+// linkedQueue is an implementation of Queue using a linked list
+type linkedQueue struct {
+    front *node
+    rear  *node
+    len   int
 }
 
-func (q *Queue) Push(val interface{}) {
-	newNode := &Node{Val: val}
-
-	if q.IsEmpty() {
-		q.Front = newNode
-		q.Rear = newNode
-	} else {
-		q.Rear.Next = newNode
-		q.Rear = newNode
-	}
-
-	q.Len++
+// NewQueue creates and returns a new Queue
+func NewQueue() Queue {
+    return &linkedQueue{}
 }
 
-func (q *Queue) Pop() interface{} {
-	if q.IsEmpty() {
-		return nil
-	}
+// Push adds a new element to the rear of the Queue
+func (q *linkedQueue) Push(val interface{}) {
+    newNode := &node{val: val}
 
-	val := q.Front.Val
-	q.Front = q.Front.Next
+    if q.IsEmpty() {
+        q.front = newNode
+        q.rear = newNode
+    } else {
+        q.rear.next = newNode
+        q.rear = newNode
+    }
 
-	q.Len--
-
-	if q.IsEmpty() {
-		q.Rear = nil
-	}
-
-	return val
+    q.len++
 }
 
-func (q *Queue) IsEmpty() bool {
-	return q.Len == 0
+// Pop removes and returns the front element of the Queue
+func (q *linkedQueue) Pop() interface{} {
+    if q.IsEmpty() {
+        return nil
+    }
+
+    val := q.front.val
+    q.front = q.front.next
+
+    q.len--
+
+    if q.IsEmpty() {
+        q.rear = nil
+    }
+
+    return val
 }
 
-func (q *Queue) Peek() interface{} {
-	if q.IsEmpty() {
-		return nil
-	}
-	return q.Front.Val
+// IsEmpty returns true if the Queue is empty
+func (q *linkedQueue) IsEmpty() bool {
+    return q.len == 0
 }
 
-func (q *Queue) Size() int {
-	return q.Len
+// Peek returns the front element of the Queue without removing it
+func (q *linkedQueue) Peek() interface{} {
+    if q.IsEmpty() {
+        return nil
+    }
+    return q.front.val
+}
+
+// Size returns the number of elements in the Queue
+func (q *linkedQueue) Size() int {
+    return q.len
 }
