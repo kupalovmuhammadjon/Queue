@@ -1,3 +1,3 @@
-module queue/v1.0.2
+module queue
 
 go 1.23.2
