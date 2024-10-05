@@ -29,6 +29,7 @@ func NewQueue() Queue {
     return &linkedQueue{}
 }
 
+//
 func (q *linkedQueue) Push(val interface{}) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
